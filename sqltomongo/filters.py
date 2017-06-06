@@ -1,5 +1,7 @@
 from pymongo import ASCENDING, DESCENDING
 
+from sqltomongo.keywords import KEYWORDS
+
 
 def project_filter(projection):
     proj = dict()
@@ -37,3 +39,10 @@ def order_filter(order_list):
         filtered_list = iter(filtered_list)
         filtered_list = [i for i in zip(filtered_list, filtered_list)]
         return filtered_list
+
+
+def coma_filter(list_with_coma):
+    if not isinstance(list_with_coma, list):
+        raise ValueError("The type of list_with_coma must be a list")
+    else:
+        return [obj.replace(KEYWORDS['COMA'], '') for obj in list_with_coma]
