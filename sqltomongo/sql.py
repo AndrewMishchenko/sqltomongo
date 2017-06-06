@@ -1,4 +1,5 @@
 from sqltomongo.keywords import KEYWORDS
+from sqltomongo.comparisons import comparison_converter
 
 
 class Checker(object):
@@ -43,8 +44,9 @@ class Checker(object):
                 elif obj.upper() in KEYWORDS['SKIP']:
                     key = obj.upper()
                     parsed_sql[key] = []
-                elif obj.upper() in KEYWORDS['COMPARISONS']:
-                    parsed_sql[key].append(obj)
+                elif obj in KEYWORDS['COMPARISONS']:
+                    operator = comparison_converter(obj)
+                    parsed_sql[key].append(operator)
                 elif key == "ORDER":
                     parsed_sql[key].append(obj)
                 elif obj.upper() in KEYWORDS['LIMIT']:
