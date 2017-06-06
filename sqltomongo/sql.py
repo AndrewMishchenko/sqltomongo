@@ -1,5 +1,5 @@
-from sqltomongo.keywords import KEYWORDS
 from sqltomongo.comparisons import comparison_converter
+from sqltomongo.keywords import KEYWORDS
 
 
 class Checker(object):
@@ -12,15 +12,22 @@ class Checker(object):
         else:
             return string.split(' ')
 
-    def check_first_dml(self):
+    def parse(self):
         if self.splited_sql[0].upper() == 'SELECT':
             return self.parse_select(self.splited_sql)
         else:
             pass
 
-    def parse(self):
-        if self.check_first_dml() == 'SELECT':
-            return self.parse_select(self.splited_sql)
+    @staticmethod
+    def parse_first(parsed_sql):
+        if not isinstance(parsed_sql, dict):
+            raise ValueError("The type of SQL must be a dict")
+        else:
+            for obj in parsed_sql.keys():
+                if obj.upper() in KEYWORDS['DML']:
+                    return obj.upper()
+            else:
+                pass
 
     def parse_select(self, sql):
         if not isinstance(sql, list):
