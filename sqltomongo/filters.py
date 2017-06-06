@@ -1,3 +1,6 @@
+from pymongo import ASCENDING, DESCENDING
+
+
 def project_filter(projection):
     proj = dict()
     for obj in projection:
@@ -17,4 +20,20 @@ def unwind_filter(projection):
             unw.append(obj[0])
         else:
             pass
-    return (unw)
+    return unw
+
+
+def order_filter(order_list):
+    if not isinstance(order_list, list):
+        raise ValueError("The type of order must be a list")
+    else:
+        filtered_list = list()
+        for obj in order_list:
+            if obj.upper() == 'ASC':
+                obj = ASCENDING
+            elif obj.upper() == 'DESC':
+                obj = DESCENDING
+            filtered_list.append(obj)
+        filtered_list = iter(filtered_list)
+        filtered_list = [i for i in zip(filtered_list, filtered_list)]
+        return filtered_list
