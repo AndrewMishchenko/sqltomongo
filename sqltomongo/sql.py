@@ -30,7 +30,8 @@ class Checker(object):
             else:
                 pass
 
-    def parse_select(self, sql):
+    @staticmethod
+    def parse_select(sql):
         if not isinstance(sql, list):
             raise ValueError("The type of SQL must be a list")
         else:
