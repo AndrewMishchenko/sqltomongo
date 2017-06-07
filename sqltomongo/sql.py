@@ -54,11 +54,11 @@ class Checker(object):
                 elif obj in KEYWORDS['COMPARISONS']:
                     operator = comparison_converter(obj)
                     parsed_sql[key].append(operator)
-                elif key == "ORDER":
-                    parsed_sql[key].append(obj)
                 elif obj.upper() in KEYWORDS['LIMIT']:
                     key = obj.upper()
                     parsed_sql[key] = []
+                elif key == "ORDER":
+                    parsed_sql[key].append(obj)
                 else:
                     parsed_sql[key].append(obj)
             return parsed_sql
