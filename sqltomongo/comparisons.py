@@ -2,16 +2,16 @@ from sqltomongo.exceptions import SqmongoComparisonError
 
 
 def comparison_converter(operator):
-    try:
-        if operator == '=':
-            operator = '=='
-        elif operator == '<>':
-            operator = '!='
-        elif operator == '>' or '>=' or '<' or '<=':
-            pass
-        else:
-            raise SqmongoComparisonError
-    except SqmongoComparisonError:
-        pass
+    if not isinstance(operator, str):
+        raise SqmongoComparisonError(operator)
     else:
-        return operator
+        if operator == '=':
+            return '=='
+        elif operator == '<>':
+            return '!='
+        elif operator == '>' or operator == '>=' or operator == '<' or operator == '<=':
+            return operator
+        elif not operator:
+            raise SqmongoComparisonError(operator)
+        else:
+            raise SqmongoComparisonError(operator)
