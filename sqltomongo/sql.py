@@ -6,7 +6,8 @@ class Checker(object):
     def __init__(self, string):
         self.splited_sql = self.spliter(string)
 
-    def spliter(self, string):
+    @staticmethod
+    def spliter(string):
         if not isinstance(string, str):
             raise ValueError("The type of SQL must be a str")
         else:
