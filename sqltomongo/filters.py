@@ -27,14 +27,17 @@ def project_filter(projection):
 
 
 def unwind_filter(projection):
-    unw = list()
-    for obj in projection:
-        if obj.endswith('.*'):
-            obj = (obj.replace('.*', '')) #.split('.')
-            unw.append(obj)
-        else:
-            pass
-    return unw
+    if not isinstance(projection, list):
+        raise ValueError("The type of unwind_filter must be a list")
+    else:
+        unw = list()
+        for obj in projection:
+            if obj.endswith('.*'):
+                obj = (obj.replace('.*', '')) #.split('.')
+                unw.append(obj)
+            else:
+                pass
+        return unw
 
 a = ['restaurant_id', 'desc,', 'borough', 'asc']
 def order_filter(order_list):
