@@ -10,17 +10,20 @@ def coma_filter(list_with_coma):
 
 
 def project_filter(projection):
-    proj = dict()
-    for obj in projection:
-        if obj.endswith('.*'):
-            obj = obj.replace('.*', '')
-            proj[obj] = 1
-        elif obj == KEYWORDS['ASTERISK']:
-            proj = obj
-            break
-        else:
-            proj[obj] = 1
-    return proj
+    if not isinstance(projection, list):
+        raise ValueError("The type of project_filter must be a list")
+    else:
+        proj = dict()
+        for obj in projection:
+            if obj.endswith('.*'):
+                obj = obj.replace('.*', '')
+                proj[obj] = 1
+            elif obj == KEYWORDS['ASTERISK']:
+                proj = obj
+                break
+            else:
+                proj[obj] = 1
+        return proj
 
 
 def unwind_filter(projection):
