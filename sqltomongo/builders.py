@@ -1,16 +1,15 @@
 import sys
 
 from pql import match, project, skip, limit, unwind, find
-from pymongo.errors import ServerSelectionTimeoutError
 
+from sqltomongo.filters import (project_filter,
+                                order_filter,
+                                coma_filter,
+                                unwind_filter,
+                                order_filter_find
+                                )
 from sqltomongo.keywords import KEYWORDS
 from sqltomongo.sql import Checker
-from sqltomongo.filters import (project_filter,
-                      order_filter,
-                      coma_filter,
-                      unwind_filter,
-                      order_filter_find
-                      )
 
 
 class Router(object):
@@ -48,8 +47,8 @@ class SelectBuilder(object):
                     else:
                         raise TypeError
                 except TypeError:
-                    sys.exit('At first you must connect to the database with '
-                             'use method!'
+                    sys.exit('At first you must connect to the database with'
+                             ' use method!'
                              )
             else:
                 raise ValueError
@@ -59,11 +58,17 @@ class SelectBuilder(object):
                      )
         try:
             # find()
-            if len(formated_query['SELECT']) == 1 and (
-                        formated_query['SELECT'][0] == KEYWORDS['ASTERISK']):
+            if (len(formated_query['SELECT']) >= 1 and (
+                formated_query['SELECT'][0] == KEYWORDS['ASTERISK'])) or (
+                len([obj for obj in coma_filter(formated_query['SELECT']
+                                            ) if obj.endswith('.*')]) == 0):
+                self.show_fields = project_filter(coma_filter(
+                                    formated_query['SELECT'])) if not (
+                                    formated_query['SELECT'][0] == KEYWORDS[
+                                        'ASTERISK']) else None
                 self.match = find(
                     " ".join(formated_query['WHERE'])) if (
-                    'WHERE' in formated_query.keys()) else None
+                    'WHERE' in formated_query.keys()) else dict()
                 self.sort = order_filter_find(
                     formated_query['ORDER']) if (
                     'ORDER' in formated_query.keys()) else None
@@ -73,7 +78,9 @@ class SelectBuilder(object):
                     'LIMIT' in formated_query.keys()) else None
                 self.query = self.find_query()
             # aggregate
-            elif len(formated_query['SELECT']) >= 1:
+            elif len(formated_query['SELECT']) >= 1 and (
+                    len([obj for obj in coma_filter(formated_query['SELECT']
+                                            ) if obj.endswith('.*')]) >= 1):
                 self.project = project(**(project_filter(
                     coma_filter(formated_query[
                                     'SELECT']))))[0]
@@ -87,7 +94,7 @@ class SelectBuilder(object):
                     'LIMIT' in formated_query.keys()) else None
                 self.unwind = [unwind(obj)[0] for obj in unwind_filter(
                     coma_filter(formated_query['SELECT']))] if (
-                    'ORDER' in formated_query.keys()) else None
+                    'SELECT' in formated_query.keys()) else None
                 self.query = self.agregation_query()
             else:
                 raise ValueError
@@ -96,8 +103,13 @@ class SelectBuilder(object):
 
     def find_query(self):
         str_query = 'self.collection.find'
-        if self.match is not None:
-            str_query += '(self.match)'
+        if self.match is not None and self.show_fields is not None:
+            str_query += '(self.match, self.show_fields)'
+        elif self.show_fields is not None or self.match is not None:
+            if self.show_fields is not None:
+                str_query += '(self.show_fields)'
+            else:
+                str_query += '(self.match)'
         else:
             str_query += '()'
         if self.sort is not None:
@@ -108,13 +120,6 @@ class SelectBuilder(object):
             str_query += '.limit(self.limit)'
         query = eval(str_query)
         return query
-        # try:
-        #     for item in query:
-        #         print(item)
-        # except ServerSelectionTimeoutError:
-        #     print("ServerSelectionTimeoutError, please check working capacity"
-        #           " of the Server!"
-        #           )
 
     def agregation_query(self):
         query = list()
@@ -130,12 +135,4 @@ class SelectBuilder(object):
         if self.unwind is not None:
             for obj in self.unwind:
                 query.append(obj)
-
         return self.collection.aggregate(query)
-        # try:
-        #     for item in self.collection.aggregate(query):
-        #         print(item)
-        # except ServerSelectionTimeoutError:
-        #     print("ServerSelectionTimeoutError, please check working capacity"
-        #           " of the Server!"
-        #           )
