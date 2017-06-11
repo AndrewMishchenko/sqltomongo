@@ -92,8 +92,8 @@ def handler(signum, frame):
 
 signal.signal(signal.SIGTSTP, handler)
 
-if __name__ == '__main__':
-    import sqltomongo
+
+def main():
     try:
         database = sys.argv[1]
     except IndexError:
@@ -112,3 +112,7 @@ if __name__ == '__main__':
     prompt.do_start(database, host, port)
     prompt.prompt = '> '
     prompt.cmdloop()
+
+
+if __name__ == '__main__':
+    main()
