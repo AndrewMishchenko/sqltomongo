@@ -71,6 +71,13 @@ class SqltomongoCli(cmd.Cmd):
         self.print_count = int(args)
         print('Count of results - {}'.format(args))
 
+    def do_db(self, args):
+        try:
+            print(self.connection.database.name)
+        except Exception as err:
+            print('At first you must connect to the database '
+                              'with use method!')
+
     def do_quit(self, args):
         """Quits the program."""
         print('bye')
