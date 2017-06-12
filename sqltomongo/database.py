@@ -6,8 +6,14 @@ from pymongo.errors import ServerSelectionTimeoutError, OperationFailure
 
 
 class DatabaseConnection(object):
+    """Establishes a connection to the mongodb."""
     def __init__(self, database=None, host='localhost', port=27017):
-        """Establish the connection with the mongo backend"""
+        """
+        Can be initialized without parameters.
+        :param database: Str name of database.
+        :param host: Host.
+        :param port: Port.
+        """
 
         self.timeout = 1
         self.host = str(host)
@@ -41,6 +47,10 @@ class DatabaseConnection(object):
                   'database!'.format(database))
 
     def use_db(self, database=None):
+        """
+        Switches between databases.
+        :param database: Str name of database.
+        """
         try:
             if database in self.client.database_names():
                 self.database = Database(self.client, database)
@@ -54,6 +64,11 @@ class DatabaseConnection(object):
                   'database!'.format(database))
 
     def authenticate(self, user=None, password=None):
+        """
+        Authenticates the user in the connected database.
+        :param user: The name of the user.
+        :param password: The password.
+        """
         if user is not None and password is not None:
             try:
                 if user in [user['user'] for user in (

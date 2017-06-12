@@ -4,6 +4,11 @@ from sqltomongo.keywords import KEYWORDS
 
 
 def coma_filter(list_with_coma):
+    """
+    Removes commas from list.
+    :param list_with_coma: List objects in which commas are available.
+    :return: List objects without commas.
+    """
     if not isinstance(list_with_coma, list):
         raise ValueError("The type of list_with_coma must be a list")
     else:
@@ -11,6 +16,11 @@ def coma_filter(list_with_coma):
 
 
 def project_filter(projection):
+    """
+    Filter the projection and delete '.*' from them.
+    :param projection: List objects with projection.
+    :return: Clear projection without '.*'.
+    """
     if not isinstance(projection, list):
         raise ValueError("The type of project_filter must be a list")
     else:
@@ -28,13 +38,18 @@ def project_filter(projection):
 
 
 def unwind_filter(projection):
+    """
+    Filter the projection and search for objects with '.*' endswith.
+    :param projection: List objects with projection.
+    :return: Clear unwind without '.*'.
+    """
     if not isinstance(projection, list):
         raise ValueError("The type of unwind_filter must be a list")
     else:
         unw = list()
         for obj in projection:
             if obj.endswith('.*'):
-                obj = (obj.replace('.*', ''))  # .split('.')
+                obj = (obj.replace('.*', ''))
                 unw.append(obj)
             else:
                 pass
@@ -42,6 +57,11 @@ def unwind_filter(projection):
 
 
 def order_filter(order_list):
+    """
+    Filter sort fields for aggregation.
+    :param order_list: List objects with fields to sort.
+    :return: dict like {'$sort': fielt_to_sort}.
+    """
     if not isinstance(order_list, list):
         raise ValueError("The type of order must be a list")
     else:
@@ -62,9 +82,10 @@ def order_filter(order_list):
 
 def order_filter_find(order_list):
     """
-    Get dirty format of ordering expression and zip it into normal.
-    :param o_list: list of tuples in format [('value_to_order', 1/-1)]
-    :return: filtered ordering expression
+    Get dirty format of ordering expression for find method and zip
+    it into normal.
+    :param order_list: List of tuples in format [('value_to_order', 1/-1)].
+    :return: Filtered ordering expression.
     """
     if not isinstance(order_list, list):
         raise ValueError("The type of order must be a list")

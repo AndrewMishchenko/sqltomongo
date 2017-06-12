@@ -13,8 +13,13 @@ from sqltomongo.sql import Checker
 
 
 class Router(object):
+    """Routes the incoming query."""
     def __init__(self, db, formated_query):
-        '''Check that formated_query is not empty'''
+        """
+        Checks that formated_query is not empty.
+        :param db: The DatabaseConnection instance.
+        :param formated_query: Dict with parsed SQL statements.
+        """
         try:
             if bool(formated_query):
                 self.formated_query = formated_query
@@ -30,11 +35,11 @@ class Router(object):
 
 
 class SelectBuilder(object):
+    """Works with SELECT statement."""
     def __init__(self, db, formated_query):
         """
-        Initialize SELECT statement
-        :param db: database
-        :param formated_query: dict of parsed query
+        :param db: The DatabaseConnection instance.
+        :param formated_query: Dict with parsed SQL statements.
         """
         self.database = db.database
         self.formated_query = formated_query
@@ -58,6 +63,8 @@ class SelectBuilder(object):
                      )
         try:
             # find()
+            # work only if formated_query >=1 and formated_query[0] == *
+            # or if not '.*'(unwind) in query
             if (len(formated_query['SELECT']) >= 1 and (
                 formated_query['SELECT'][0] == KEYWORDS['ASTERISK'])) or (
                 len([obj for obj in coma_filter(formated_query['SELECT']
@@ -77,7 +84,8 @@ class SelectBuilder(object):
                 self.limit = int(formated_query['LIMIT'][0]) if (
                     'LIMIT' in formated_query.keys()) else None
                 self.query = self.find_query()
-            # aggregate
+            # aggregate()
+            # work only if formated_query >=1 and if '.*'(unwind) in query
             elif len(formated_query['SELECT']) >= 1 and (
                     len([obj for obj in coma_filter(formated_query['SELECT']
                                             ) if obj.endswith('.*')]) >= 1):
@@ -95,13 +103,14 @@ class SelectBuilder(object):
                 self.unwind = [unwind(obj)[0] for obj in unwind_filter(
                     coma_filter(formated_query['SELECT']))] if (
                     'SELECT' in formated_query.keys()) else None
-                self.query = self.agregation_query()
+                self.query = self.aggregation_query()
             else:
                 raise ValueError
         except ValueError:
             sys.exit('Stoped! Your projection is empty! Please try again.')
 
     def find_query(self):
+        """Work with common 'find' query."""
         str_query = 'self.collection.find'
         if self.match is not None and self.show_fields is not None:
             str_query += '(self.match, self.show_fields)'
@@ -121,7 +130,8 @@ class SelectBuilder(object):
         query = eval(str_query)
         return query
 
-    def agregation_query(self):
+    def aggregation_query(self):
+        """Work with 'agregation' query if '.*' in it."""
         query = list()
         query.append(self.project)
         if self.match is not None:

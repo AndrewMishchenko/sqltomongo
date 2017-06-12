@@ -2,6 +2,10 @@ from sqltomongo.exceptions import SqmongoComparisonError
 
 
 def comparison_converter(operator):
+    """
+    Converts comparison operators.
+    :param operator: Sting with comparison.
+    """
     if not isinstance(operator, str):
         raise SqmongoComparisonError(operator)
     else:

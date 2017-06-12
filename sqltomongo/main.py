@@ -9,6 +9,7 @@ from sqltomongo.sql import Checker
 
 
 class SqltomongoCli(cmd.Cmd):
+    """Sqltomongo command line interface."""
     def do_start(self, database, host, port):
         self.connection = DatabaseConnection(database, host, port)
         self.print_count = 20
@@ -17,6 +18,7 @@ class SqltomongoCli(cmd.Cmd):
         self.connection.use_db(database)
 
     def do_auth(self, args):
+        """Authenticates the user in the selected database."""
         auth = args.strip('()')
         clean_auth = list()
         for obj in auth.split(','):
@@ -54,6 +56,7 @@ class SqltomongoCli(cmd.Cmd):
             print(err)
 
     def print_result(self, a, st_index, end_index):
+        """Print results for query."""
         for i in a[st_index: end_index]:
             print(i)
         self.st_index = end_index
@@ -68,10 +71,12 @@ class SqltomongoCli(cmd.Cmd):
             print('At first you must enter the query!')
 
     def do_result_count(self, args):
+        """Changes the number of results displayed."""
         self.print_count = int(args)
         print('Count of results - {}'.format(args))
 
     def do_db(self, args):
+        """Show the name of the used database."""
         try:
             print(self.connection.database.name)
         except Exception as err:
@@ -94,6 +99,7 @@ class SqltomongoCli(cmd.Cmd):
 
 
 def handler(signum, frame):
+    """Handle Ctrl+Z."""
     SqltomongoCli().do_quit('')
 
 
@@ -101,6 +107,7 @@ signal.signal(signal.SIGTSTP, handler)
 
 
 def main():
+    """Main func."""
     try:
         database = sys.argv[1]
     except IndexError:
