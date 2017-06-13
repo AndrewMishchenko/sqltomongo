@@ -1,10 +1,12 @@
+[![Build Status](https://travis-ci.org/AndrewMishchenko/sqltomongo.svg?branch=master)](https://travis-ci.org/AndrewMishchenko/sqltomongo)
+
 ### Sqltomongo:
 * Sqltomongo is a CLI (command line interface) to work with MongoDB much easier. 
 * Sqltomongo translates SQL (Structured Query Language) queries to MongoDB queries.
 * Sqltomongo uses the builtin MongoDB module.
 
 ### Installation
-Download from git repository:
+Download from github repository:
 ```sh 
 https://github.com/AndrewMishchenko/sqltomongo 
 ```
