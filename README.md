@@ -1,5 +1,4 @@
 [![Build Status](https://travis-ci.org/AndrewMishchenko/sqltomongo.svg?branch=master)](https://travis-ci.org/AndrewMishchenko/sqltomongo)
-
 [![Docker Build Statu](https://img.shields.io/docker/build/jrottenberg/ffmpeg.svg)](https://cloud.docker.com/app/andrewmishchenko/repository/docker/andrewmishchenko/sqltomongo/general)
 
 ### Sqltomongo:
