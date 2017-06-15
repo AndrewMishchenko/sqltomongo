@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.org/AndrewMishchenko/sqltomongo.svg?branch=master)](https://travis-ci.org/AndrewMishchenko/sqltomongo)
 
+[![Docker Build Statu](https://img.shields.io/docker/build/jrottenberg/ffmpeg.svg)](https://cloud.docker.com/app/andrewmishchenko/repository/docker/andrewmishchenko/sqltomongo/general)
+
 ### Sqltomongo:
 * Sqltomongo is a CLI (command line interface) to work with MongoDB much easier. 
 * Sqltomongo translates SQL (Structured Query Language) queries to MongoDB queries.
